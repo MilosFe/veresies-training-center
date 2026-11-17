@@ -1,26 +1,42 @@
 @import "tailwindcss";
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
+@import "@fontsource/montserrat/400.css";
+@import "@fontsource/montserrat/500.css";
+@import "@fontsource/montserrat/600.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Design tokens taken from the Canva mockups. Change them here only. */
+@theme {
+  --color-cream: #faf8f3;
+  --color-sand: #f3e5d8;
+  --color-teal: #2f5a62;
+  --color-teal-deep: #1f4650;
+  --color-ink: #2f4f57;
+  --color-line: #d9d4c8;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Pyramid levels, bottom (1) to top (5) */
+  --color-level-1: #9070a8;
+  --color-level-2: #7fa5b5;
+  --color-level-3: #7f9c78;
+  --color-level-4: #cfae5c;
+  --color-level-5: #b87a6a;
+  --color-rose: #c69a98;
+  --color-alert: #c0392b;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Montserrat", system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  color: var(--color-teal);
 }
