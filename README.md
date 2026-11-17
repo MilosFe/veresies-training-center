@@ -34,3 +34,10 @@ Then open http://localhost:3000.
 - Login, purchase and timed unlocking
 - Activities 2 to 15 of Stress Reset as blocks
 - Translations, service worker, app icons, real images and videos
+
+## If a page shows "Jest worker encountered ... child process exceptions"
+
+Stop the dev server, delete the `.next` folder and run `npm run dev` again.
+This happened once after a `git pull` while the server was running.
+
+Built on Node 22; also confirmed working on Node 20.

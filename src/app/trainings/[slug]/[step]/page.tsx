@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { BlockView } from "@/components/BlockView";
 import { getStep, getTrainings } from "@/lib/content";
 
@@ -21,10 +22,21 @@ export async function generateMetadata(
   return { title: found && `${found.step.title} · ${found.product.title}` };
 }
 
-export default async function StepPage(
-  props: PageProps<"/trainings/[slug]/[step]">,
-) {
-  const { slug, step: stepParam } = await props.params;
+// The address is read inside Suspense so the page shell can render at once.
+export default function StepPage(props: PageProps<"/trainings/[slug]/[step]">) {
+  return (
+    <Suspense>
+      <StepContent params={props.params} />
+    </Suspense>
+  );
+}
+
+async function StepContent({
+  params,
+}: {
+  params: Promise<{ slug: string; step: string }>;
+}) {
+  const { slug, step: stepParam } = await params;
   const found = await getStep(slug, Number(stepParam));
   if (!found || found.step.blocks.length === 0) notFound();
   const { product, step } = found;

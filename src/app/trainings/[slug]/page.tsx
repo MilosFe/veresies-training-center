@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { getTraining, getTrainings } from "@/lib/content";
 
 export async function generateStaticParams() {
@@ -14,10 +15,17 @@ export async function generateMetadata(
   return { title: (await getTraining(slug))?.title };
 }
 
-export default async function TrainingPage(
-  props: PageProps<"/trainings/[slug]">,
-) {
-  const { slug } = await props.params;
+// The address is read inside Suspense so the page shell can render at once.
+export default function TrainingPage(props: PageProps<"/trainings/[slug]">) {
+  return (
+    <Suspense>
+      <Training params={props.params} />
+    </Suspense>
+  );
+}
+
+async function Training({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const training = await getTraining(slug);
   if (!training) notFound();
 
