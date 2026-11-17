@@ -66,13 +66,6 @@ const activity1: Step = {
       transcript:
         "Close your eyes for a moment. Simply allow yourself to notice what's happening in your body.\n\nNotice your feet on the ground. The ground is holding and supporting you. It is always there beneath you. Just pay attention.\n\nNow notice your head. The jaw. Your throat. Your shoulders. Your arms. Your chest. Your stomach. Your pelvis. The legs.\n\nWhere do you sense something? What exactly does it feel like? Pressure, tightness, warmth, aching, restlessness, numbness, or something else.\n\nTake a moment to connect with these sensations: where and what you are feeling in your body right now. You can gently place your hands on those areas to bring more attention to the sensations and feel them more clearly. Allow yourself to observe them.\n\nWhen you are ready, simply open your eyes.",
     },
-    {
-      type: "image",
-      src: "/images/stress-reset/body-outline.png",
-      alt: "Outline of a body with points marking where sensations can appear",
-      width: 175,
-      height: 351,
-    },
     { type: "tool", tool: "body-scan" },
     {
       type: "link",

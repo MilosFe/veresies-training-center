@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Block } from "@/content/types";
-import { BodyScanTool } from "./tools/BodyScanTool";
+import { BodyScanLauncher } from "./tools/BodyScanLauncher";
 
 const toolNames: Record<string, string> = {
   "body-scan": "Body Scan",
@@ -110,7 +110,7 @@ export function BlockView({ block }: { block: Block }) {
         </section>
       );
     case "tool":
-      if (block.tool === "body-scan") return <BodyScanTool />;
+      if (block.tool === "body-scan") return <BodyScanLauncher />;
       return (
         <section className="rounded-2xl border-2 border-dashed border-teal p-5">
           <p className="text-xs uppercase tracking-widest text-teal">

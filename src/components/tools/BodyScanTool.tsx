@@ -17,6 +17,7 @@ import {
   getBodyScansSnapshot,
   subscribeBodyScans,
 } from "@/lib/user-data/body-scans";
+import { BodyFigure } from "./BodyFigure";
 
 const chip = (on: boolean) =>
   `rounded-full border px-3 py-1.5 text-sm transition ${
@@ -146,18 +147,28 @@ export function BodyScanTool() {
           setJustSaved(true);
         }}
       >
-        <Multi
-          legend="Where in the body did you notice something?"
-          options={bodyAreas.map((name) => ({ name }))}
-          value={form.areas}
-          onChange={(v) => set("areas", v)}
-        />
-        <Multi
-          legend="What did it feel like?"
-          options={sensationGroups}
-          value={form.sensations}
-          onChange={(v) => set("sensations", v)}
-        />
+        <div className="grid gap-6 sm:grid-cols-[1fr_11rem]">
+          <div className="space-y-6">
+            <Multi
+              legend="Where in the body did you notice something?"
+              options={bodyAreas.map((name) => ({ name }))}
+              value={form.areas}
+              onChange={(v) => set("areas", v)}
+            />
+            <Multi
+              legend="What did it feel like?"
+              options={sensationGroups}
+              value={form.sensations}
+              onChange={(v) => set("sensations", v)}
+            />
+          </div>
+          <div className="sm:order-last">
+            <BodyFigure value={form.areas} onChange={(v) => set("areas", v)} />
+            <p className="mt-2 text-center text-xs opacity-70">
+              Click the figure or the buttons.
+            </p>
+          </div>
+        </div>
         <div>
           <label htmlFor="strength" className="font-semibold">
             How strong did it feel? <span>{form.strength}</span> / 10
