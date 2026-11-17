@@ -147,7 +147,7 @@ export function BodyScanTool() {
           setJustSaved(true);
         }}
       >
-        <div className="grid gap-6 sm:grid-cols-[1fr_11rem]">
+        <div className="grid gap-6 sm:grid-cols-[1fr_12rem]">
           <div className="space-y-6">
             <Multi
               legend="Where in the body did you notice something?"
@@ -165,7 +165,7 @@ export function BodyScanTool() {
           <div className="sm:order-last">
             <BodyFigure value={form.areas} onChange={(v) => set("areas", v)} />
             <p className="mt-2 text-center text-xs opacity-70">
-              Click the figure or the buttons.
+              Click a dot on the body or use the buttons.
             </p>
           </div>
         </div>

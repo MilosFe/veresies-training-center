@@ -1,51 +1,30 @@
 "use client";
 
-// A simple body outline. Each region is a button: selected areas are filled
-// in, and clicking a region selects or clears it.
+import Image from "next/image";
 
-type Region = { name: string; shapes: React.ReactNode };
-
-const regions: Region[] = [
-  { name: "Head", shapes: <ellipse cx="100" cy="34" rx="25" ry="27" /> },
-  { name: "Jaw", shapes: <rect x="82" y="52" width="36" height="18" rx="9" /> },
-  {
-    name: "Throat",
-    shapes: <rect x="90" y="72" width="20" height="16" rx="4" />,
-  },
-  {
-    name: "Shoulders",
-    shapes: <rect x="42" y="90" width="116" height="26" rx="13" />,
-  },
-  {
-    name: "Arms",
-    shapes: (
-      <>
-        <rect x="26" y="118" width="22" height="128" rx="11" />
-        <rect x="152" y="118" width="22" height="128" rx="11" />
-      </>
-    ),
-  },
-  {
-    name: "Chest",
-    shapes: <rect x="52" y="118" width="96" height="54" rx="10" />,
-  },
-  {
-    name: "Stomach",
-    shapes: <rect x="56" y="174" width="88" height="50" rx="10" />,
-  },
-  {
-    name: "Pelvis",
-    shapes: <rect x="52" y="226" width="96" height="40" rx="14" />,
-  },
-  {
-    name: "Legs",
-    shapes: (
-      <>
-        <rect x="56" y="268" width="40" height="160" rx="16" />
-        <rect x="104" y="268" width="40" height="160" rx="16" />
-      </>
-    ),
-  },
+// The body outline from the Stress Reset document, with a clickable dot on
+// each point. Dots belonging to the same body area switch on and off together.
+// Positions are percentages of the image's width and height.
+// `added` marks a point the original image does not show, so it is drawn here.
+const dots: { area: string; x: number; y: number; added?: boolean }[] = [
+  { area: "Head", x: 49.5, y: 6.8 },
+  { area: "Jaw", x: 49.5, y: 11.6, added: true },
+  { area: "Throat", x: 49.5, y: 16.5 },
+  { area: "Shoulders", x: 31, y: 22 },
+  { area: "Shoulders", x: 68, y: 22 },
+  { area: "Chest", x: 49.5, y: 25.5 },
+  { area: "Arms", x: 25.5, y: 37 },
+  { area: "Arms", x: 73.5, y: 37 },
+  { area: "Arms", x: 21.5, y: 47.3 },
+  { area: "Arms", x: 77.5, y: 47.3 },
+  { area: "Stomach", x: 49.5, y: 36.5 },
+  { area: "Pelvis", x: 49.5, y: 47 },
+  { area: "Legs", x: 39, y: 60.5 },
+  { area: "Legs", x: 59.5, y: 60.5 },
+  { area: "Legs", x: 37, y: 72 },
+  { area: "Legs", x: 61.5, y: 72 },
+  { area: "Legs", x: 35, y: 89 },
+  { area: "Legs", x: 63.5, y: 89 },
 ];
 
 export function BodyFigure({
@@ -55,43 +34,48 @@ export function BodyFigure({
   value: string[];
   onChange: (next: string[]) => void;
 }) {
-  const toggle = (name: string) =>
+  const toggle = (area: string) =>
     onChange(
-      value.includes(name) ? value.filter((v) => v !== name) : [...value, name],
+      value.includes(area) ? value.filter((v) => v !== area) : [...value, area],
     );
 
   return (
-    <svg
-      viewBox="0 0 200 440"
+    <div
       role="group"
       aria-label="Body figure: choose where you notice something"
-      className="mx-auto h-auto w-full max-w-44"
+      className="relative mx-auto w-full max-w-48"
     >
-      {regions.map(({ name, shapes }) => {
-        const on = value.includes(name);
+      <Image
+        src="/images/stress-reset/body-figure.png"
+        alt=""
+        width={175}
+        height={351}
+        className="h-auto w-full select-none"
+        draggable={false}
+      />
+      {dots.map(({ area, x, y, added }, i) => {
+        const on = value.includes(area);
         return (
-          <g
-            key={name}
-            role="button"
-            tabIndex={0}
+          <button
+            key={i}
+            type="button"
+            aria-label={area}
             aria-pressed={on}
-            aria-label={name}
-            onClick={() => toggle(name)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                toggle(name);
-              }
-            }}
-            className={`cursor-pointer stroke-cream stroke-2 outline-none transition focus-visible:stroke-teal-deep ${
-              on ? "fill-teal" : "fill-level-2/50 hover:fill-level-2"
+            title={area}
+            onClick={() => toggle(area)}
+            style={{ left: `${x}%`, top: `${y}%` }}
+            className={`absolute size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition ${
+              on
+                ? "border-white bg-level-5 shadow-[0_0_0_4px_rgb(184_122_106/0.35)]"
+                : `hover:border-teal hover:bg-white/60 ${
+                    added
+                      ? "scale-50 border-white/80 bg-white/70 hover:scale-100"
+                      : "border-transparent"
+                  }`
             }`}
-          >
-            <title>{name}</title>
-            {shapes}
-          </g>
+          />
         );
       })}
-    </svg>
+    </div>
   );
 }
