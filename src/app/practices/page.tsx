@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getPracticeCategories } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Practices" };
@@ -10,8 +11,14 @@ export default async function PracticesPage() {
       <h1 className="text-4xl italic">Practices</h1>
       <p className="mt-2">Self-care & regulation.</p>
       <div className="mt-10 grid gap-6 md:grid-cols-[1fr_3fr]">
-        <div className="flex min-h-40 items-center justify-center rounded-2xl border border-ink bg-line/60 p-5 font-semibold">
-          Interactive Tools
+        <div className="rounded-2xl border border-ink bg-line/60 p-5">
+          <p className="font-semibold">Interactive Tools</p>
+          <Link
+            href="/tools/body-scan"
+            className="mt-3 block text-teal underline"
+          >
+            Body Scan
+          </Link>
         </div>
         <ul className="grid gap-6 sm:grid-cols-2">
           {categories.map((c) => (

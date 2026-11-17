@@ -24,11 +24,13 @@ Then open http://localhost:3000.
 | `src/lib/content.ts` | Data access. Pages read content only through these functions |
 | `src/lib/mock-user.ts` | Placeholder user and progress |
 | `src/components/BlockView.tsx` | Renders one content block |
+| `src/components/tools/BodyScanTool.tsx` | The Body Scan form and history |
+| `src/lib/user-data/body-scans.ts` | Saved scans, kept in the browser's localStorage for now |
 
 ## Not built yet
 
-- The interactive tools (Body Scan first), saved entries and progress
-- A mock API (MSW) behind `src/lib/content.ts`, then the real backend
+- The other interactive tools (Body Map, Context Map, Root Map, List of Changes, Response Map) and real progress
+- A real backend behind `src/lib/content.ts` and `src/lib/user-data/`
 - Login, purchase and timed unlocking
 - Activities 2 to 15 of Stress Reset as blocks
 - Translations, service worker, app icons, real images and videos
