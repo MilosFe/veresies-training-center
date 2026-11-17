@@ -15,7 +15,7 @@ export function Pyramid({ trainings }: { trainings: Product[] }) {
               <li key={t.slug} className="relative">
                 <Link
                   href={`/trainings/${t.slug}`}
-                  className={`flex h-20 w-26 items-center justify-center rounded-xl px-2 text-center text-sm text-white transition hover:brightness-110 ${levelColor[level]} ${
+                  className={`flex h-20 w-26 items-center justify-center rounded-xl px-1.5 text-center text-[0.8rem] leading-tight text-white transition hover:brightness-110 ${levelColor[level]} ${
                     t.available ? "" : "opacity-80"
                   }`}
                 >
