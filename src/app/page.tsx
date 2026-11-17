@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const explore = [
@@ -5,13 +6,20 @@ const explore = [
     href: "/trainings",
     title: "Trainings",
     text: "Your guided path, level by level",
+    image: "/images/explore-trainings.jpg",
   },
   {
     href: "/focused-programs",
     title: "Focused Programs",
     text: "Short trainings for specific challenges",
+    image: "/images/explore-programs.jpg",
   },
-  { href: "/practices", title: "Practices", text: "Self-care & regulation" },
+  {
+    href: "/practices",
+    title: "Practices",
+    text: "Self-care & regulation",
+    image: "/images/explore-practices.jpg",
+  },
 ];
 
 export default function Home() {
@@ -41,9 +49,14 @@ export default function Home() {
             <p className="text-center text-sm uppercase tracking-widest text-teal">
               Watch welcome video
             </p>
-            <div className="mt-2 flex aspect-[9/16] items-center justify-center rounded-2xl bg-teal/15 text-sm text-teal">
-              Welcome video
-            </div>
+            <Image
+              src="/images/welcome.jpg"
+              alt="Welcome video"
+              width={216}
+              height={385}
+              priority
+              className="mt-2 w-full rounded-2xl"
+            />
           </div>
         </div>
       </section>
@@ -53,10 +66,16 @@ export default function Home() {
           Explore
         </h2>
         <ul className="mt-10 grid gap-8 sm:grid-cols-3">
-          {explore.map(({ href, title, text }) => (
+          {explore.map(({ href, title, text, image }) => (
             <li key={href}>
               <Link href={href} className="group block text-center">
-                <div className="aspect-[3/4] rounded-3xl border-4 border-teal bg-sand transition group-hover:brightness-95" />
+                <Image
+                  src={image}
+                  alt=""
+                  width={231}
+                  height={313}
+                  className="w-full rounded-3xl border-4 border-teal transition group-hover:brightness-95"
+                />
                 <h3 className="mt-4 text-3xl">{title}</h3>
                 <p className="text-sm">{text}</p>
               </Link>

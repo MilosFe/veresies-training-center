@@ -40,7 +40,9 @@ export default async function MyJourneyPage() {
         })}
         <p className="mt-6 text-sm font-semibold uppercase">Completed</p>
         <p className="text-sm">
-          {mockUser.completed.length ? mockUser.completed.join(", ") : "None yet"}
+          {mockUser.completed.length
+            ? mockUser.completed.join(", ")
+            : "None yet"}
         </p>
         <p className="mt-8 rounded-xl bg-line px-4 py-2 text-center text-sm font-semibold uppercase">
           Your practices

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Block } from "@/content/types";
 
@@ -131,11 +132,47 @@ export function BlockView({ block }: { block: Block }) {
           </ul>
         </section>
       );
+    case "image":
+      return (
+        <Image
+          src={block.src}
+          alt={block.alt}
+          width={block.width}
+          height={block.height}
+          className="mx-auto h-auto max-h-96 w-auto"
+        />
+      );
     case "download":
       return (
         <section className="rounded-2xl border border-line bg-white p-5">
-          <p className="text-xs uppercase tracking-widest text-teal">Download</p>
+          <p className="text-xs uppercase tracking-widest text-teal">
+            Download
+          </p>
           <p className="mt-1">{block.title}</p>
+          {block.files && (
+            <ul className="mt-4 flex flex-wrap gap-4">
+              {block.files.map((f) => (
+                <li key={f.src}>
+                  <a
+                    href={f.src}
+                    download
+                    className="block text-center text-sm"
+                  >
+                    <Image
+                      src={f.src}
+                      alt={`${f.label} wallpaper`}
+                      width={f.width}
+                      height={f.height}
+                      className="h-64 w-auto rounded-xl"
+                    />
+                    <span className="mt-1 block text-teal underline">
+                      Download {f.label}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       );
     case "homework":

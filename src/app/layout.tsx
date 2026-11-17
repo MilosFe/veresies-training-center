@@ -16,7 +16,7 @@ export const viewport: Viewport = { themeColor: "#2f5a62" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
         <Header />
         <main className="flex-1">{children}</main>

@@ -77,7 +77,11 @@ export const focusedPrograms: Product[] = [
 
 export const practiceCategories: PracticeCategory[] = [
   { slug: "grounding", title: "Grounding", tint: "#dbe2d6" },
-  { slug: "sleep-and-relaxation", title: "Sleep & Relaxation", tint: "#ddd3e3" },
+  {
+    slug: "sleep-and-relaxation",
+    title: "Sleep & Relaxation",
+    tint: "#ddd3e3",
+  },
   { slug: "emotional-release", title: "Emotional Release", tint: "#e8d2d0" },
   {
     slug: "nervous-system-regulation",
@@ -89,8 +93,24 @@ export const practiceCategories: PracticeCategory[] = [
 ];
 
 export const team: TeamMember[] = [
-  { name: "Gina Veresie", role: "Psychologist & Analytical Body Psychotherapist" },
-  { name: "Kyriakos Veresies", role: "Addiction Psychiatrist & Neurologist" },
-  { name: "Louiza Veresie", role: "Psychiatrist & Psychotherapist" },
-  { name: "Ivan Veresie", role: "Neurologist & Neuroscience Specialist" },
+  {
+    name: "Gina Veresie",
+    role: "Psychologist & Analytical Body Psychotherapist",
+    photo: "/images/team/gina-veresie.jpg",
+  },
+  {
+    name: "Kyriakos Veresies",
+    role: "Addiction Psychiatrist & Neurologist",
+    photo: "/images/team/kyriakos-veresies.jpg",
+  },
+  {
+    name: "Louiza Veresie",
+    role: "Psychiatrist & Psychotherapist",
+    photo: "/images/team/louiza-veresie.jpg",
+  },
+  {
+    name: "Ivan Veresie",
+    role: "Neurologist & Neuroscience Specialist",
+    photo: "/images/team/ivan-veresie.jpg",
+  },
 ];

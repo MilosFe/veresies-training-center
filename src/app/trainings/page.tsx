@@ -10,8 +10,8 @@ export default async function TrainingsPage() {
     <div className="mx-auto max-w-6xl px-6 py-10">
       <h1 className="text-4xl italic">Trainings</h1>
       <p className="mt-2 max-w-xl">
-        Trainings build on each other from the bottom of the pyramid to the
-        top. Start with Stress Reset.
+        Trainings build on each other from the bottom of the pyramid to the top.
+        Start with Stress Reset.
       </p>
       <div className="mt-10">
         <Pyramid trainings={trainings} />

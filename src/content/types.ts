@@ -19,7 +19,12 @@ export type Block =
   | { type: "practice"; title: string }
   | { type: "tool"; tool: ToolId }
   | { type: "reflection"; questions: string[] }
-  | { type: "download"; title: string }
+  | { type: "image"; src: string; alt: string; width: number; height: number }
+  | {
+      type: "download";
+      title: string;
+      files?: { src: string; label: string; width: number; height: number }[];
+    }
   | { type: "homework"; body: string }
   | { type: "link"; label: string; href: string };
 
@@ -53,4 +58,4 @@ export type Product = {
 
 export type PracticeCategory = { slug: string; title: string; tint: string };
 
-export type TeamMember = { name: string; role: string };
+export type TeamMember = { name: string; role: string; photo: string };
