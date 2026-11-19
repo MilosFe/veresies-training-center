@@ -1,6 +1,8 @@
-// Saved Body Scans. For now they live in the browser's localStorage; the
-// functions below are the only way the app reads or writes them, so a real
-// API can replace the storage later without touching the components.
+// Saved Body Scans, kept per logged-in user. For now they live in the
+// browser's localStorage; the functions below are the only way the app reads
+// or writes them, so a real API can replace the storage later without
+// touching the components.
+import { getCurrentUser, subscribeAuth } from "@/lib/auth/demo-auth";
 
 export type BodyScan = {
   id: string;
@@ -17,52 +19,79 @@ export type BodyScan = {
 
 export type NewBodyScan = Omit<BodyScan, "id" | "createdAt">;
 
-const KEY = "vtc.bodyScans.v1";
+const BASE = "vtc.bodyScans.v1";
 const EMPTY: BodyScan[] = [];
 
-let cache: BodyScan[] | null = null;
+let cache: { userId: string; scans: BodyScan[] } | null = null;
 const listeners = new Set<() => void>();
 
+const keyFor = (userId: string) => `${BASE}.${userId}`;
+
 function read(): BodyScan[] {
-  if (cache) return cache;
+  const user = getCurrentUser();
+  if (!user) return EMPTY;
+  if (cache?.userId === user.id) return cache.scans;
+  let scans = EMPTY;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    cache = raw ? (JSON.parse(raw) as BodyScan[]) : EMPTY;
+    const raw = window.localStorage.getItem(keyFor(user.id));
+    if (raw) scans = JSON.parse(raw) as BodyScan[];
   } catch {
-    cache = EMPTY;
+    // Unreadable storage counts as no scans.
   }
-  return cache;
+  cache = { userId: user.id, scans };
+  return scans;
 }
 
 function write(next: BodyScan[]) {
-  cache = next;
+  const user = getCurrentUser();
+  if (!user) return;
+  cache = { userId: user.id, scans: next };
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(next));
+    window.localStorage.setItem(keyFor(user.id), JSON.stringify(next));
   } catch {
     // Storage can be full or blocked; the scans then last until reload.
   }
   listeners.forEach((l) => l());
 }
 
-export function addBodyScan(scan: NewBodyScan): BodyScan {
-  const saved: BodyScan = {
-    ...scan,
-    id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
-  };
-  write([saved, ...read()]);
-  return saved;
+export function addBodyScan(scan: NewBodyScan) {
+  if (!getCurrentUser()) return;
+  write([
+    { ...scan, id: crypto.randomUUID(), createdAt: new Date().toISOString() },
+    ...read(),
+  ]);
 }
 
 export function deleteBodyScan(id: string) {
   write(read().filter((s) => s.id !== id));
 }
 
+/**
+ * Scans saved before accounts existed sit under the bare key. Give them to
+ * the user who is logged in now, once, so nothing recorded earlier is lost.
+ */
+export function adoptAnonymousScans() {
+  try {
+    const raw = window.localStorage.getItem(BASE);
+    if (!raw || !getCurrentUser()) return;
+    const old = JSON.parse(raw) as BodyScan[];
+    window.localStorage.removeItem(BASE);
+    if (old.length) write([...read(), ...old]);
+  } catch {
+    // Nothing to adopt.
+  }
+}
+
 // For React's useSyncExternalStore.
 export function subscribeBodyScans(listener: () => void) {
   listeners.add(listener);
+  // A different user means a different list.
+  const offAuth = subscribeAuth(() => {
+    cache = null;
+    listener();
+  });
   const onStorage = (e: StorageEvent) => {
-    if (e.key === KEY) {
+    if (e.key?.startsWith(BASE)) {
       cache = null;
       listener();
     }
@@ -70,6 +99,7 @@ export function subscribeBodyScans(listener: () => void) {
   window.addEventListener("storage", onStorage);
   return () => {
     listeners.delete(listener);
+    offAuth();
     window.removeEventListener("storage", onStorage);
   };
 }

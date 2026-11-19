@@ -22,7 +22,9 @@ Then open http://localhost:3000.
 | `src/content/catalog.ts` | The pyramid of trainings, focused programs, practice categories, team |
 | `src/content/stress-reset.ts` | Stress Reset. Activity 1 is fully converted; 2 to 15 are outlines |
 | `src/lib/content.ts` | Data access. Pages read content only through these functions |
-| `src/lib/mock-user.ts` | Placeholder user and progress |
+| `src/lib/mock-user.ts` | Placeholder progress |
+| `src/lib/auth/demo-auth.ts` | Demo login: accounts and session in localStorage, passwords kept only as salted hashes |
+| `src/components/auth/` | Login form and the gate that asks logged-out users to log in |
 | `src/components/BlockView.tsx` | Renders one content block |
 | `src/components/tools/BodyScanTool.tsx` | The Body Scan form and history |
 | `src/lib/user-data/body-scans.ts` | Saved scans, kept in the browser's localStorage for now |
@@ -31,7 +33,7 @@ Then open http://localhost:3000.
 
 - The other interactive tools (Body Map, Context Map, Root Map, List of Changes, Response Map) and real progress
 - A real backend behind `src/lib/content.ts` and `src/lib/user-data/`
-- Login, purchase and timed unlocking
+- A real, server-side login (the current one is a browser-only demo), purchase and timed unlocking
 - Activities 2 to 15 of Stress Reset as blocks
 - Translations, service worker, app icons, real images and videos
 

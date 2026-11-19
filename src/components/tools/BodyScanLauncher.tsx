@@ -6,12 +6,14 @@ import {
   getBodyScansSnapshot,
   subscribeBodyScans,
 } from "@/lib/user-data/body-scans";
+import { useUser } from "@/lib/auth/use-user";
 import { BodyScanTool } from "./BodyScanTool";
 
 // Shown inside an activity: a card with a button that opens the Body Scan in
 // a panel on the right, so the activity text stays readable beside it.
 export function BodyScanLauncher() {
   const [open, setOpen] = useState(false);
+  const user = useUser();
   const scans = useSyncExternalStore(
     subscribeBodyScans,
     getBodyScansSnapshot,
@@ -40,9 +42,11 @@ export function BodyScanLauncher() {
         </p>
         <h3 className="mt-1 text-2xl">Body Scan</h3>
         <p className="mt-1 text-sm">
-          {scans.length === 0
-            ? "You have no saved scans yet."
-            : `You have ${scans.length} saved ${scans.length === 1 ? "scan" : "scans"}.`}
+          {!user
+            ? "Log in to save your scans."
+            : scans.length === 0
+              ? "You have no saved scans yet."
+              : `You have ${scans.length} saved ${scans.length === 1 ? "scan" : "scans"}.`}
         </p>
         <button
           type="button"

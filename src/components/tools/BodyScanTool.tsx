@@ -17,6 +17,7 @@ import {
   getBodyScansSnapshot,
   subscribeBodyScans,
 } from "@/lib/user-data/body-scans";
+import { RequireUser } from "@/components/auth/RequireUser";
 import { BodyFigure } from "./BodyFigure";
 
 const chip = (on: boolean) =>
@@ -137,161 +138,169 @@ export function BodyScanTool() {
       </p>
       <h3 className="mt-1 text-2xl">Body Scan</h3>
 
-      <form
-        className="mt-5 space-y-6"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!canSave) return;
-          addBodyScan(form);
-          setForm(blank);
-          setJustSaved(true);
-        }}
-      >
-        <div className="grid gap-6 sm:grid-cols-[1fr_12rem]">
-          <div className="space-y-6">
-            <Multi
-              legend="Where in the body did you notice something?"
-              options={bodyAreas.map((name) => ({ name }))}
-              value={form.areas}
-              onChange={(v) => set("areas", v)}
+      <div className="mt-5">
+        <RequireUser reason="Log in to do a Body Scan. Your scans are saved to your account.">
+          <form
+            className="space-y-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!canSave) return;
+              addBodyScan(form);
+              setForm(blank);
+              setJustSaved(true);
+            }}
+          >
+            <div className="grid gap-6 sm:grid-cols-[1fr_12rem]">
+              <div className="space-y-6">
+                <Multi
+                  legend="Where in the body did you notice something?"
+                  options={bodyAreas.map((name) => ({ name }))}
+                  value={form.areas}
+                  onChange={(v) => set("areas", v)}
+                />
+                <Multi
+                  legend="What did it feel like?"
+                  options={sensationGroups}
+                  value={form.sensations}
+                  onChange={(v) => set("sensations", v)}
+                />
+              </div>
+              <div className="sm:order-last">
+                <BodyFigure
+                  value={form.areas}
+                  onChange={(v) => set("areas", v)}
+                />
+                <p className="mt-2 text-center text-xs opacity-70">
+                  Click a dot on the body or use the buttons.
+                </p>
+              </div>
+            </div>
+            <div>
+              <label htmlFor="strength" className="font-semibold">
+                How strong did it feel? <span>{form.strength}</span> / 10
+              </label>
+              <input
+                id="strength"
+                type="range"
+                min={0}
+                max={10}
+                value={form.strength}
+                onChange={(e) => set("strength", Number(e.target.value))}
+                className="mt-2 block w-full accent-teal"
+              />
+            </div>
+            <Single
+              legend="What are you doing right now?"
+              options={doingOptions}
+              value={form.doing}
+              onChange={(v) => set("doing", v)}
             />
-            <Multi
-              legend="What did it feel like?"
-              options={sensationGroups}
-              value={form.sensations}
-              onChange={(v) => set("sensations", v)}
+            <Single
+              legend="Who are you with?"
+              options={companyOptions}
+              value={form.company}
+              onChange={(v) => set("company", v)}
             />
-          </div>
-          <div className="sm:order-last">
-            <BodyFigure value={form.areas} onChange={(v) => set("areas", v)} />
-            <p className="mt-2 text-center text-xs opacity-70">
-              Click a dot on the body or use the buttons.
+            <Single
+              legend="How does what you are doing feel to you?"
+              options={feelingOptions}
+              value={form.feeling}
+              onChange={(v) => set("feeling", v)}
+            />
+            <Single
+              legend="Can you name an emotion you are experiencing right now?"
+              options={emotionOptions}
+              value={form.emotion}
+              onChange={(v) => set("emotion", v)}
+            />
+            <div>
+              <label htmlFor="note" className="font-semibold">
+                Note (optional)
+              </label>
+              <input
+                id="note"
+                type="text"
+                value={form.note}
+                onChange={(e) => set("note", e.target.value)}
+                className="mt-2 block w-full rounded-xl border border-line px-3 py-2"
+              />
+            </div>
+
+            {strong && (
+              <p className="rounded-xl bg-sand p-3 text-sm">
+                If the sensations are too strong and unpleasant, you may want to
+                try a{" "}
+                <Link href="/practices" className="text-teal underline">
+                  regulation practice
+                </Link>
+                .
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-4">
+              <button
+                type="submit"
+                disabled={!canSave}
+                className="rounded-xl bg-teal px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-cream disabled:opacity-40"
+              >
+                Save scan
+              </button>
+              {!canSave && (
+                <span className="text-sm opacity-70">
+                  Choose at least one body area and one sensation.
+                </span>
+              )}
+              {justSaved && (
+                <span role="status" className="text-sm text-teal">
+                  Scan saved.
+                </span>
+              )}
+            </div>
+          </form>
+
+          <div className="mt-8 border-t border-line pt-5">
+            <h4 className="font-semibold">Your scans ({scans.length})</h4>
+            {scans.length === 0 ? (
+              <p className="mt-2 text-sm opacity-70">
+                No scans yet. Aim for 3 to 4 a day over the next three days.
+              </p>
+            ) : (
+              <ul className="mt-3 space-y-2">
+                {scans.map((s) => (
+                  <li
+                    key={s.id}
+                    className="flex items-start justify-between gap-4 rounded-xl border border-line p-3 text-sm"
+                  >
+                    <div>
+                      <p className="font-medium">
+                        {when.format(new Date(s.createdAt))} · strength{" "}
+                        {s.strength}
+                      </p>
+                      <p>
+                        {s.areas.join(", ")}: {s.sensations.join(", ")}
+                      </p>
+                      <p className="opacity-70">
+                        {[s.doing, s.company, s.feeling, s.emotion, s.note]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => deleteBodyScan(s.id)}
+                      className="shrink-0 text-teal underline"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="mt-4 text-xs opacity-60">
+              Demo: scans are kept in this browser, separately for each account.
             </p>
           </div>
-        </div>
-        <div>
-          <label htmlFor="strength" className="font-semibold">
-            How strong did it feel? <span>{form.strength}</span> / 10
-          </label>
-          <input
-            id="strength"
-            type="range"
-            min={0}
-            max={10}
-            value={form.strength}
-            onChange={(e) => set("strength", Number(e.target.value))}
-            className="mt-2 block w-full accent-teal"
-          />
-        </div>
-        <Single
-          legend="What are you doing right now?"
-          options={doingOptions}
-          value={form.doing}
-          onChange={(v) => set("doing", v)}
-        />
-        <Single
-          legend="Who are you with?"
-          options={companyOptions}
-          value={form.company}
-          onChange={(v) => set("company", v)}
-        />
-        <Single
-          legend="How does what you are doing feel to you?"
-          options={feelingOptions}
-          value={form.feeling}
-          onChange={(v) => set("feeling", v)}
-        />
-        <Single
-          legend="Can you name an emotion you are experiencing right now?"
-          options={emotionOptions}
-          value={form.emotion}
-          onChange={(v) => set("emotion", v)}
-        />
-        <div>
-          <label htmlFor="note" className="font-semibold">
-            Note (optional)
-          </label>
-          <input
-            id="note"
-            type="text"
-            value={form.note}
-            onChange={(e) => set("note", e.target.value)}
-            className="mt-2 block w-full rounded-xl border border-line px-3 py-2"
-          />
-        </div>
-
-        {strong && (
-          <p className="rounded-xl bg-sand p-3 text-sm">
-            If the sensations are too strong and unpleasant, you may want to try
-            a{" "}
-            <Link href="/practices" className="text-teal underline">
-              regulation practice
-            </Link>
-            .
-          </p>
-        )}
-
-        <div className="flex flex-wrap items-center gap-4">
-          <button
-            type="submit"
-            disabled={!canSave}
-            className="rounded-xl bg-teal px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-cream disabled:opacity-40"
-          >
-            Save scan
-          </button>
-          {!canSave && (
-            <span className="text-sm opacity-70">
-              Choose at least one body area and one sensation.
-            </span>
-          )}
-          {justSaved && (
-            <span role="status" className="text-sm text-teal">
-              Scan saved.
-            </span>
-          )}
-        </div>
-      </form>
-
-      <div className="mt-8 border-t border-line pt-5">
-        <h4 className="font-semibold">Your scans ({scans.length})</h4>
-        {scans.length === 0 ? (
-          <p className="mt-2 text-sm opacity-70">
-            No scans yet. Aim for 3 to 4 a day over the next three days.
-          </p>
-        ) : (
-          <ul className="mt-3 space-y-2">
-            {scans.map((s) => (
-              <li
-                key={s.id}
-                className="flex items-start justify-between gap-4 rounded-xl border border-line p-3 text-sm"
-              >
-                <div>
-                  <p className="font-medium">
-                    {when.format(new Date(s.createdAt))} · strength {s.strength}
-                  </p>
-                  <p>
-                    {s.areas.join(", ")}: {s.sensations.join(", ")}
-                  </p>
-                  <p className="opacity-70">
-                    {[s.doing, s.company, s.feeling, s.emotion, s.note]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => deleteBodyScan(s.id)}
-                  className="shrink-0 text-teal underline"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="mt-4 text-xs opacity-60">
-          Scans are saved in this browser only until accounts are built.
-        </p>
+        </RequireUser>
       </div>
     </section>
   );
